@@ -4,13 +4,13 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building"
-                sh 'javac PrimeFinder.java'
+                sh 'javac HelloWorld.java'
             }
         }
         stage('Test') {
             steps {
                 echo "testing if code works"
-                sh 'java PrimeFinder 10'
+                sh 'java HelloWorld'
             }
         }
         stage('Deploy') {

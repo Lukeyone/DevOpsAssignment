@@ -16,7 +16,7 @@ pipeline {
                 bat "\"C:\\Program Files\\Java\\jdk-21\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
                 
                 echo "Building PrimeFinderTest"
-                // Compile the JUnit test class with the current directory in the classpath
+                // Compile the JUnit test class with the current directory and lib in the classpath
                 bat "javac -cp .;lib\\junit-platform-console-standalone-1.7.0-all.jar PrimeFinderTest.java"
                 
                 bat "dir"

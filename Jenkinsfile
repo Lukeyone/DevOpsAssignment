@@ -6,6 +6,7 @@ pipeline {
                 echo "build"
                 bat "javac PrimeFinder.java"
                 bat "\"C:\\Program Files\\Java\\jdk-21\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
+                bat "dir"
             }
         }
         stage('Test') { 

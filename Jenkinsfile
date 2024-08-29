@@ -6,8 +6,7 @@ pipeline {
                 echo "build"
                 bat "javac PrimeFinder.java"
                 // Jar file command here because jar didn't work on its own, which is the file path of Java 21 jar.exe
-                bat "cd lib" 
-                bat "wget https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar"
+                bat 'powershell -Command "Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar -OutFile lib\\junit-platform-console-standalone-1.7.0-all.jar"'
                 bat "\"C:\\Program Files\\Java\\jdk-21\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
                 bat "dir"
                 bat "cd .."

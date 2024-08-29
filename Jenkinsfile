@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                echo "just before maven build"
                 sh 'mvn -B -DskipTests clean package' 
             }
         }

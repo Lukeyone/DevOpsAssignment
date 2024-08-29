@@ -5,6 +5,8 @@ pipeline {
             steps {
                 echo "build"
                 bat "javac PrimeFinder.java"
+                bat "jar cvf PrimeFinder.jar PrimeFinder.class"
+                archiveArtifacts artifacts: 'PrimeFinder.jar', allowEmptyArchive: false
             }
         }
         stage('Test') { 

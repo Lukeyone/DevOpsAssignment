@@ -30,6 +30,11 @@ pipeline {
                 bat "java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path"
             }
         }
+        stage('Code Analysis') { 
+            steps {
+                echo "code analysis"
+            }
+        }
         stage('Deploy') { 
             steps {
                 echo "Deploying PrimeFinder for up to 1 million"

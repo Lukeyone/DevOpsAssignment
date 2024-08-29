@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "build"
                 bat "javac PrimeFinder.java"
-                bat "java -jar PrimeFinder.jar"
+                bat "dir"
             }
         }
         stage('Test') { 

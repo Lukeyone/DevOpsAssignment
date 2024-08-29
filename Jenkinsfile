@@ -3,14 +3,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "Building"
-                sh 'javac HelloWorld.java'
+                sh 'mvn -B -DskipTests clean package' 
             }
         }
         stage('Test') {
             steps {
                 echo "testing if code works"
-                sh 'java HelloWorld'
             }
         }
         stage('Deploy') {

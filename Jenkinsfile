@@ -31,8 +31,13 @@ pipeline {
             }
         }
         stage('Code Analysis') { 
+            environment {
+                scannerHome = tool 'lil-sonar-tool';
+            }
             steps {
-                echo "code analysis"
+              withSonarQubeEnv(credentialsId: 'lil-sonar-credentials', installationName: 'lil sonar installation') {
+                sh "${scannerHome}/bin/sonar-scanner"
+              }
             }
         }
         stage('Deploy') { 

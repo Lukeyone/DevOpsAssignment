@@ -35,9 +35,8 @@ pipeline {
                 scannerHome = tool 'lil-sonar-tool';
             }
             steps {
-              withSonarQubeEnv(credentialsId: '', installationName: 'lil sonar installation') {
-                sh "${scannerHome}/bin/sonar-scanner"
-              }
+                echo 'Running SonarQube Scanner'
+                bat '"C:\\Path\\To\\sonar-scanner.bat" -Dsonar.projectKey=my_project -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=mytoken'
             }
         }
         stage('Deploy') { 

@@ -32,11 +32,12 @@ pipeline {
         }
         stage('Code Analysis') { 
             environment {
-                scannerHome = tool 'lil-sonar-tool';
+                scannerHome = tool 'lil-sonar-tool'
             }
             steps {
                 echo 'Running SonarQube Scanner'
-                bat '"C:\\Path\\To\\sonar-scanner.bat" -Dsonar.projectKey=my_project -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=mytoken'
+                // Use the scannerHome environment variable for the path
+                bat "\"${env.scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=mytoken"
             }
         }
         stage('Deploy') { 

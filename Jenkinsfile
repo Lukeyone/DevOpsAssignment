@@ -54,7 +54,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing code analysis with SonarQube'
-                withSonarQubeEnv('MySonarQubeServer') {
+                withSonarQubeEnv('sq1') {
                     bat 'sonar-scanner'
                 }
             }

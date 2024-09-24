@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'node:16-alpine' }
-    }
+    agent any
     stages {
         stage("verify tooling") {
             steps {
@@ -11,7 +9,6 @@ pipeline {
                 docker-compose --version
                 curl --version
                 jq --version
-                node --version
                 """
             }
         }
@@ -46,7 +43,12 @@ pipeline {
             }
         }
         stage('Deploy') { 
+            agent {
+                docker { image 'node:16-alpine' }
+            }
             steps {
+                echo "checking node"
+                bat 'node --version'
                 echo "Start container"
                 bat 'docker-compose up -d --no-color --wait'
                 bat 'docker-compose ps'

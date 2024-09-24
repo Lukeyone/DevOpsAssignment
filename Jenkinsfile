@@ -27,9 +27,6 @@ pipeline {
                     echo 'Building with Maven'
                     bat 'mvn clean compile'
 
-                    echo 'Running Tests with Maven'
-                    bat 'mvn test'
-
                     echo 'Building PrimeFinder'
                     bat 'javac PrimeFinder.java'
 
@@ -51,6 +48,9 @@ pipeline {
 
         stage('Test') {
             steps {
+                echo 'Running Tests with Maven'
+                bat 'mvn test'
+                
                 echo 'Running JUnit Tests'
                 // Run the JUnit tests using the standalone JUnit platform console
                 bat 'java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path'

@@ -6,10 +6,10 @@ pipeline {
                 echo "setting up maven"
                 git url: 'https://github.com/cyrille-leclerc/multi-module-maven-project'
 
-                withMaven(
+                withMaven {
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
                     bat 'mvn clean verify'
-                ) 
+                }
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"

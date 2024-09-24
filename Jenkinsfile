@@ -44,7 +44,7 @@ pipeline {
         }
         stage('Deploy') { 
             agent {
-                docker { image 'node:16-alpine' }
+                docker { dockerfile true }
             }
             steps {
                 echo "checking node"

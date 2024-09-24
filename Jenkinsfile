@@ -6,7 +6,7 @@ pipeline {
                 echo "setting up maven"
                 git url: 'https://github.com/Lukeyone/DevOpsAssignment'
                 withMaven(maven: 'maven-399') {
-                    sh "mvn clean verify"
+                    bat 'mvn clean verify'
                 }
                 bat "java --version"
                 echo "Building PrimeFinder"

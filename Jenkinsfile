@@ -4,16 +4,7 @@ pipeline {
         stage('Build') { 
             steps {
                 echo "setting up maven"
-                git url: 'https://github.com/cyrille-leclerc/multi-module-maven-project'
-
-                withMaven(
-                    // Maven installation declared in the Jenkins "Global Tool Configuration"
-                    maven: 'maven-399', // (1)
-                ) {
-                // Run the maven build
-                    bat 'mvn clean verify'
-                } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe & FindBugs & SpotBugs reports...
-
+                
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"
@@ -45,8 +36,12 @@ pipeline {
         stage('Code Analysis') {
             // agent { label 'linux'}
             steps {
-                withSonarQubeEnv(installationName: 'sq1') {
-                    bat 'mvn clean sonar:sonar'
+                withMaven(
+                    maven: 'maven-399'
+                ) {
+                    withSonarQubeEnv(installationName: 'sq1') {
+                        bat 'mvn clean sonar:sonar'
+                    }
                 }
             }
         }

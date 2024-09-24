@@ -50,19 +50,15 @@ pipeline {
         }
 
         stage('Deploy') {
-            agent { dockerfile true }
             steps {
                 script {
                     echo 'Deploying with Docker'
-                    
-                    // Checkout the latest code
-                    checkout scm
 
                     // Build Docker image and run container
                     def image = docker.build("67fae38cfd7b1c720e9787f9406061e1fa259600", "-f Dockerfile .")
 
-                    // Use Linux-style path for Windows paths
-                    image.inside('-w /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2/') {
+                    // Use Linux-style path for Windows
+                    image.inside('-v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2/:/workspace -w /workspace') {
                         bat 'docker inspect -f . "67fae38cfd7b1c720e9787f9406061e1fa259600"'
                     }
                 }

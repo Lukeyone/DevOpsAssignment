@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        WORKSPACE_DIR = '/c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -12,6 +16,7 @@ pipeline {
         stage('Verify Tooling') {
             steps {
                 script {
+                    // Verify Docker and other tooling versions
                     bat 'docker info'
                     bat 'docker --version'
                     bat 'docker-compose --version'
@@ -45,22 +50,36 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing code analysis'
-                // Add code analysis steps here, e.g., static analysis tools
+                // Placeholder for static analysis tools (e.g., SonarQube or Checkstyle)
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Build and Deploy') {
             steps {
                 script {
-                    echo 'Deploying with Docker'
+                    echo 'Building Docker image'
+                    
+                    // Build Docker image using a Linux-style path
+                    bat 'docker build -t primefinder-image -f Dockerfile .'
+                    
+                    // Inspect the Docker image to ensure it's built
+                    bat 'docker inspect primefinder-image'
+                }
+            }
+        }
 
-                    // Build Docker image and run container
-                    def image = docker.build("67fae38cfd7b1c720e9787f9406061e1fa259600", "-f Dockerfile .")
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    echo 'Running Docker container'
 
-                    // Use Linux-style path for Windows
-                    image.inside('-v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2/:/workspace -w /workspace') {
-                        bat 'docker inspect -f . "67fae38cfd7b1c720e9787f9406061e1fa259600"'
-                    }
+                    // Adjusting the path for Docker volume mounting (Windows to Linux path)
+                    def dockerRunCmd = """
+                    docker run -d -v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2:/workspace \
+                    -w /workspace primefinder-image
+                    """
+                    
+                    bat dockerRunCmd
                 }
             }
         }
@@ -71,7 +90,7 @@ pipeline {
             }
             steps {
                 echo 'Releasing the application...'
-                // Add your release steps here
+                // Add any release steps needed here (e.g., deployment to a server or artifact repository)
             }
         }
 
@@ -81,7 +100,7 @@ pipeline {
             }
             steps {
                 echo 'Setting up monitoring and alerting...'
-                // Add monitoring and alerting setup steps here
+                // Add steps for setting up monitoring and alerting (e.g., Prometheus, Grafana)
             }
         }
     }

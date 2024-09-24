@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "setting up maven"
                 git url: 'https://github.com/Lukeyone/DevOpsAssignment'
-                withMaven(maven: 'maven-3') {
+                withMaven(maven: 'maven-399') {
                     sh "mvn clean verify"
                 }
                 bat "java --version"

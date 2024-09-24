@@ -43,9 +43,7 @@ pipeline {
             }
         }
         stage('Deploy') { 
-            agent {
-                docker { dockerfile true }
-            }
+            agent { dockerfile true }
             steps {
                 echo "checking node"
                 bat 'node --version'

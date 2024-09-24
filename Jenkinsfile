@@ -3,12 +3,6 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                // echo "setting up maven"
-                // git url: 'https://github.com/Lukeyone/DevOpsAssignment'
-                // echo "git urled itself"
-                // withMaven(maven: 'maven-391') {
-                //     bat 'mvn clean verify'
-                // }
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"
@@ -38,12 +32,13 @@ pipeline {
             }
         }
         stage('Code Analysis') {
-            echo 'code analysis'
-            // steps {
-            //     withSonarQubeEnv(installationName: 'sq1') {
-            //         bat 'mvn clean sonar:sonar'
-            //     }
-            // }
+            steps {
+                echo 'Performing code analysis'
+                // Uncomment and configure SonarQube or other tools if required
+                // withSonarQubeEnv(installationName: 'sq1') {
+                //     bat 'mvn clean sonar:sonar'
+                // }
+            }
         }
         stage('Deploy') { 
             steps {

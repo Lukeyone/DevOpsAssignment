@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven3' // Ensure this matches the Maven installation name in Jenkins
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -11,9 +15,8 @@ pipeline {
         stage('Verify Tooling') {
             steps {
                 script {
-                    bat 'docker info'
                     bat 'docker --version'
-                    bat 'docker-compose --version'
+                    bat 'mvn --version'
                     bat 'curl --version'
                     bat 'jq --version'
                 }
@@ -22,29 +25,24 @@ pipeline {
 
         stage('Build') {
             steps {
-                script {
-                    echo 'Building PrimeFinder'
-                    bat 'javac PrimeFinder.java'
-                    bat 'if not exist lib mkdir lib'
-                    bat 'powershell -Command "Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar -OutFile lib\\junit-platform-console-standalone-1.7.0-all.jar"'
-                    bat '"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\jar" cvf PrimeFinder.jar PrimeFinder.class'
-                    echo 'Building PrimeFinderTest'
-                    bat 'javac -cp .;lib\\junit-platform-console-standalone-1.7.0-all.jar PrimeFinderTest.java'
-                }
+                echo 'Building with Maven'
+                bat 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running JUnit Tests'
-                bat 'java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path'
+                echo 'Running Tests with Maven'
+                bat 'mvn test'
             }
         }
 
         stage('Code Analysis') {
             steps {
-                echo 'Performing code analysis'
-                // Add code analysis steps here, e.g., static analysis tools
+                echo 'Performing Code Analysis with SonarQube'
+                withSonarQubeEnv('SonarQube') {
+                    bat 'mvn sonar:sonar'
+                }
             }
         }
 
@@ -52,17 +50,10 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image'
-                    bat 'docker build -t primefinder-image -f Dockerfile .'
+                    bat 'docker build -t primefinder-image .'
 
-                    echo 'Inspecting the Docker image'
-                    bat 'docker inspect primefinder-image'
-
-                    echo 'Running Docker container and executing PrimeFinder up to 1,000,000'
-                    bat '''
-                    docker run -d -v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD:/workspace \
-                    -w /workspace primefinder-image \
-                    java -cp . PrimeFinder 1000000
-                    '''
+                    echo 'Running Docker container in test environment'
+                    bat 'docker run -d --name primefinder_test primefinder-image'
                 }
             }
         }
@@ -86,6 +77,9 @@ pipeline {
         always {
             echo 'Cleaning up workspace'
             cleanWs()
+            // Stop and remove Docker containers
+            bat 'docker stop primefinder_test || true'
+            bat 'docker rm primefinder_test || true'
         }
         success {
             echo 'Build completed successfully!'

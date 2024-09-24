@@ -4,7 +4,10 @@ pipeline {
         stage('Build') { 
             steps {
                 echo "setting up maven"
-                
+                git url: 'https://github.com/Lukeyone/DevOpsAssignment'
+                withMaven(maven: 'maven-3') {
+                    sh "mvn clean verify"
+                }
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"

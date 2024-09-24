@@ -31,16 +31,12 @@ pipeline {
                 bat "java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path"
             }
         }
-        stage('Code Analysis') { 
-            echo 'before environment'
-            environment {
-                scannerHome = tool 'sq1'
-            }
+        stage('Code Analysis') {
+            // agent { label 'linux'}
             steps {
-                echo 'Running SonarQube Scanner'
-                bat "cd sonarqube"
-                // Use the scannerHome environment variable for the path
-                bat "\"${env.scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=jenkins-sonar"
+                withSonarQubeEnv(installationnName: 'sq1') {
+                    sh './mvnw clean sonar:sonar'
+                }
             }
         }
         stage('Deploy') { 

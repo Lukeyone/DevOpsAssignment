@@ -34,7 +34,7 @@ pipeline {
         stage('Code Analysis') {
             // agent { label 'linux'}
             steps {
-                withSonarQubeEnv(installationnName: 'sq1') {
+                withSonarQubeEnv(installationName: 'sq1') {
                     sh './mvnw clean sonar:sonar'
                 }
             }

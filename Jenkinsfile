@@ -40,8 +40,10 @@ pipeline {
         stage('Code Analysis') {
             // agent { label 'linux'}
             steps {
-                withSonarQubeEnv(installationName: 'sq1') {
-                    bat 'mvn clean sonar:sonar'
+                withMaven(maven: 'maven-391') {
+                    withSonarQubeEnv(installationName: 'sq1') {
+                        bat 'mvn clean sonar:sonar'
+                    }
                 }
             }
         }

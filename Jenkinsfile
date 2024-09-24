@@ -14,7 +14,7 @@ pipeline {
                 bat 'powershell -Command "Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar -OutFile lib\\junit-platform-console-standalone-1.7.0-all.jar"'
                 
                 // Create a JAR file for PrimeFinder
-                bat "\"C:\\Program Files\\Java\\jdk-17\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
+                bat "\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
                 
                 echo "Building PrimeFinderTest"
                 // Compile the JUnit test class with the current directory and lib in the classpath

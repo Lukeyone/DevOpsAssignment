@@ -39,14 +39,9 @@ pipeline {
         stage('Code Analysis') {
             // agent { label 'linux'}
             steps {
-                echo "code analysis"
-                // withMaven(
-                //     maven: 'maven-399'
-                // ) {
-                //     withSonarQubeEnv(installationName: 'sq1') {
-                //         bat 'mvn clean sonar:sonar'
-                //     }
-                // }
+                withSonarQubeEnv(installationName: 'sq1') {
+                    bat 'mvn clean sonar:sonar'
+                }
             }
         }
         stage('Deploy') { 

@@ -32,6 +32,7 @@ pipeline {
             }
         }
         stage('Code Analysis') { 
+            echo 'before environment'
             environment {
                 scannerHome = tool 'sq1'
             }
@@ -39,7 +40,7 @@ pipeline {
                 echo 'Running SonarQube Scanner'
                 bat "cd sonarqube"
                 // Use the scannerHome environment variable for the path
-                bat "\"${env.scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=mytoken"
+                bat "\"${env.scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=jenkins-sonar"
             }
         }
         stage('Deploy') { 

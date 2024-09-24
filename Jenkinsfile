@@ -50,9 +50,7 @@ pipeline {
         }
 
         stage('Deploy') {
-            agent {
-                label 'docker' // Specify agent with Docker installed
-            }
+            agent { dockerfile true }
             steps {
                 script {
                     echo 'Deploying with Docker'

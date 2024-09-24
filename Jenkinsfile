@@ -1,15 +1,14 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Build') { 
             steps {
                 echo "setting up maven"
                 git url: 'https://github.com/Lukeyone/DevOpsAssignment'
-                
+                echo "git urled itself"
                 withMaven(maven: 'maven-399') {
                     bat 'mvn clean verify'
                 }
-                
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"
@@ -31,57 +30,31 @@ pipeline {
                 echo "Build done"
             }
         }
-
-        stage('Code Analysis') {
-            steps {
-                echo "Running SpotBugs Code Analysis"
-                // Wrap SpotBugs execution in try-catch block to avoid breaking the pipeline on failure
-                script {
-                    try {
-                        withMaven(maven: 'maven-399') {
-                            bat 'mvn com.github.spotbugs:spotbugs-maven-plugin:4.2.0:spotbugs'
-                        }
-                    } catch (Exception e) {
-                        // Log the error but continue execution
-                        echo "SpotBugs failed: ${e.message}"
-                        writeFile file: 'spotbugs_error.log', text: "SpotBugs failure: ${e.message}\n"
-                    }
-                }
-            }
-        }
-
-        stage('Test') {
+        stage('Test') { 
             steps {
                 echo "Running JUnit Tests"
                 // Run the JUnit tests using the standalone JUnit platform console
                 bat "java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path"
             }
         }
-        
-        stage('SonarQube Analysis') {
+        stage('Code Analysis') {
+            // agent { label 'linux'}
             steps {
                 withSonarQubeEnv(installationName: 'sq1') {
                     bat 'mvn clean sonar:sonar'
                 }
             }
         }
-        
-        stage('Deploy') {
+        stage('Deploy') { 
             steps {
                 echo "Deploying PrimeFinder for up to 1 million"
                 bat "java PrimeFinder 1000000"
             }
         }
-        
-        stage('Release') {
+        stage('Release') { 
             steps {
                 echo "Release"
             }
-        }
-    }
-    post {
-        always {
-            echo "Pipeline finished"
         }
     }
 }

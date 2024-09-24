@@ -35,7 +35,7 @@ pipeline {
             // agent { label 'linux'}
             steps {
                 withSonarQubeEnv(installationName: 'sq1') {
-                    bat './mvnw clean sonar:sonar'
+                    bat 'mvnw.cmd clean sonar:sonar'
                 }
             }
         }

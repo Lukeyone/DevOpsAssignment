@@ -13,8 +13,11 @@ pipeline {
                 // Download the JUnit jar file to the lib directory
                 sh 'curl -o lib/junit-platform-console-standalone-1.7.0-all.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar'
                 
-                // Create a JAR file for PrimeFinder
-                sh "jar cvf PrimeFinder.jar PrimeFinder.class"
+                // Create the manifest file for specifying the Main-Class
+                sh 'echo "Main-Class: PrimeFinder" > manifest.txt'
+                
+                // Create a JAR file for PrimeFinder with the manifest
+                sh "jar cvfm PrimeFinder.jar manifest.txt PrimeFinder.class"
                 
                 echo "Building PrimeFinderTest"
                 // Compile the JUnit test class with the current directory and lib in the classpath

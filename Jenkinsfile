@@ -49,9 +49,20 @@ pipeline {
         }
         stage('Deploy') { 
             steps {
+                // From docker compose tutorial
+                echo "Start container"
+                bat 'docker-compose up -d --no-color --wait'
+                bat 'docker-compose ps'
+                // Tests
+                bat 'curl http://localhost:3000/param?query=demo | jq'
                 echo "Deploying PrimeFinder for up to 1 million"
                 bat "java PrimeFinder 1000000"
-                
+            }
+            post {
+                always {
+                    bat 'docker-compose down --remove-orphans -v'
+                    bat 'docker-compose ps'
+                }
             }
         }
         stage('Release') { 

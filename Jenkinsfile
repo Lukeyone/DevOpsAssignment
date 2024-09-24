@@ -9,10 +9,9 @@ pipeline {
                 withMaven(
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
                     maven: 'maven-399', // (1)
-                    bat 'mvn clean verify'
                 ) {
                 // Run the maven build
-                sh "mvn clean verify"
+                bat 'mvn clean install'
                 } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe & FindBugs & SpotBugs reports...
 
                 bat "java --version"

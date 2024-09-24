@@ -11,7 +11,6 @@ pipeline {
         stage('Verify Tooling') {
             steps {
                 script {
-                    bat 'docker info'
                     bat 'docker --version'
                     bat 'docker-compose --version'
                     bat 'curl --version'
@@ -53,9 +52,9 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                echo 'Performing code analysis with SonarQube'
+                echo 'Performing Code Analysis with SonarQube'
                 withSonarQubeEnv('sq1') {
-                    bat 'sonar-scanner'
+                    bat 'mvn sonar:sonar'
                 }
             }
         }
@@ -96,9 +95,10 @@ pipeline {
         always {
             echo 'Cleaning up workspace'
             cleanWs()
-            // Stop and remove Docker containers
-            bat 'docker stop primefinder_container || true'
-            bat 'docker rm primefinder_container || true'
+
+            // Stop and remove Docker containers, with Windows-compatible logic
+            bat 'docker stop primefinder_container || echo "Container already stopped"'
+            bat 'docker rm primefinder_container || echo "Container not found"'
         }
         success {
             echo 'Build completed successfully!'

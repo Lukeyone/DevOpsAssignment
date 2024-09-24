@@ -1,7 +1,6 @@
 pipeline {
-    agent any
-    tools {
-        dockerTool 'dockerHD' // This will use the Docker installation you've set up
+    agent {
+        docker { image 'node:16-alpine' }
     }
     stages {
         stage("verify tooling") {
@@ -12,6 +11,7 @@ pipeline {
                 docker-compose --version
                 curl --version
                 jq --version
+                node --version
                 """
             }
         }

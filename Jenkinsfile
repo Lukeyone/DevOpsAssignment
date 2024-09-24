@@ -1,4 +1,4 @@
-pipeline {
+pipeline { 
     agent any
 
     stages {
@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        stage('Docker Build and Deploy') {
+        stage('Deploy') {
             steps {
                 script {
                     echo 'Building Docker image'
@@ -58,11 +58,25 @@ pipeline {
                     bat 'docker inspect primefinder-image'
 
                     echo 'Running Docker container and executing PrimeFinder up to 1,000,000'
-                    bat '''
-                    docker run -d -v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD:/workspace \
-                    -w /workspace primefinder-image \
-                    java -cp . PrimeFinder 1000000
-                    '''
+                    // Capturing the output of the PrimeFinder execution
+                    def result = bat(
+                        script: '''
+                        docker run --rm -v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD:/workspace \
+                        -w /workspace primefinder-image \
+                        java -cp . PrimeFinder 1000000
+                        ''',
+                        returnStdout: true
+                    )
+
+                    // Displaying the result in the Jenkins console
+                    echo "PrimeFinder results: ${result}"
+
+                    // Checking if the result contains the expected output and marking the deployment as successful
+                    if (result.contains("Total number of primes")) {
+                        echo 'Deployment successful!'
+                    } else {
+                        error('Deployment failed! PrimeFinder did not run successfully.')
+                    }
                 }
             }
         }

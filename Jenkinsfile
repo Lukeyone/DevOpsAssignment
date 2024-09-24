@@ -6,21 +6,10 @@ pipeline {
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"
-                
-                // Check if the lib directory exists and create it if it does not
-                bat "if not exist lib mkdir lib"
-                
-                // Download the JUnit jar file to the lib directory
-                bat 'powershell -Command "Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar -OutFile lib\\junit-platform-console-standalone-1.7.0-all.jar"'
-                
+
                 // Create a JAR file for PrimeFinder
                 bat "\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
-                
-                echo "Building PrimeFinderTest"
-                // Compile the JUnit test class with the current directory and lib in the classpath
-                bat "javac -cp .;lib\\junit-platform-console-standalone-1.7.0-all.jar PrimeFinderTest.java"
-                
-                bat "dir"
+
                 echo "Build done"
             }
         }
@@ -31,29 +20,19 @@ pipeline {
                 bat "java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path"
             }
         }
-        stage('Code Analysis') {
-            steps {
-                echo 'Performing code analysis'
-                // Uncomment and configure SonarQube or other tools if required
-                // withSonarQubeEnv(installationName: 'sq1') {
-                //     bat 'mvn clean sonar:sonar'
-                // }
-            }
-        }
         stage('Deploy') { 
             steps {
-                echo "Deploying PrimeFinder for up to 1 million"
-                bat "java PrimeFinder 1000000"
-            }
-        }
-        stage('Release') { 
-            steps {
-                echo "Release"
-            }
-        }
-        stage('Monitoring and Alerting') { 
-            steps {
-                echo "Monitoring and Alerting"
+                echo "Deploying PrimeFinder to Test Environment"
+                // Simulate deployment by copying the JAR to a 'test_environment' directory
+                bat "if not exist test_environment mkdir test_environment"
+                bat "copy PrimeFinder.jar test_environment\\PrimeFinder.jar"
+
+                // Navigate to the test_environment directory
+                dir('test_environment') {
+                    echo "Running PrimeFinder in Test Environment"
+                    // Run the application with a test parameter
+                    bat "java -jar PrimeFinder.jar 1000"
+                }
             }
         }
     }

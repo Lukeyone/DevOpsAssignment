@@ -1,32 +1,32 @@
 pipeline {
-    agent { label 'linux' }
+    agent any
     stages {
         stage('Build') { 
             steps {
-                echo "setting up maven"
+                // echo "setting up maven"
                 // git url: 'https://github.com/Lukeyone/DevOpsAssignment'
                 // echo "git urled itself"
                 // withMaven(maven: 'maven-391') {
-                //     sh 'mvn clean verify'
+                //     bat 'mvn clean verify'
                 // }
-                sh "java --version"
+                bat "java --version"
                 echo "Building PrimeFinder"
-                sh "javac PrimeFinder.java"
+                bat "javac PrimeFinder.java"
                 
                 // Check if the lib directory exists and create it if it does not
-                sh "mkdir -p lib"
+                bat "if not exist lib mkdir lib"
                 
                 // Download the JUnit jar file to the lib directory
-                sh 'curl -L -o lib/junit-platform-console-standalone-1.7.0-all.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar'
+                bat 'powershell -Command "Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.0/junit-platform-console-standalone-1.7.0-all.jar -OutFile lib\\junit-platform-console-standalone-1.7.0-all.jar"'
                 
                 // Create a JAR file for PrimeFinder
-                sh "jar cvf PrimeFinder.jar PrimeFinder.class"
+                bat "\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\jar\" cvf PrimeFinder.jar PrimeFinder.class"
                 
                 echo "Building PrimeFinderTest"
                 // Compile the JUnit test class with the current directory and lib in the classpath
-                sh "javac -cp .:lib/junit-platform-console-standalone-1.7.0-all.jar PrimeFinderTest.java"
+                bat "javac -cp .;lib\\junit-platform-console-standalone-1.7.0-all.jar PrimeFinderTest.java"
                 
-                sh "ls -l"
+                bat "dir"
                 echo "Build done"
             }
         }
@@ -34,27 +34,31 @@ pipeline {
             steps {
                 echo "Running JUnit Tests"
                 // Run the JUnit tests using the standalone JUnit platform console
-                sh "java -jar lib/junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path"
+                bat "java -jar lib\\junit-platform-console-standalone-1.7.0-all.jar --class-path . --scan-class-path"
             }
         }
         stage('Code Analysis') {
-            steps {
-                withMaven(maven: 'maven-391') {
-                    withSonarQubeEnv(installationName: 'sq1') {
-                        sh 'mvn clean sonar:sonar'
-                    }
-                }
-            }
+            echo 'code analysis'
+            // steps {
+            //     withSonarQubeEnv(installationName: 'sq1') {
+            //         bat 'mvn clean sonar:sonar'
+            //     }
+            // }
         }
         stage('Deploy') { 
             steps {
                 echo "Deploying PrimeFinder for up to 1 million"
-                sh "java PrimeFinder 1000000"
+                bat "java PrimeFinder 1000000"
             }
         }
         stage('Release') { 
             steps {
                 echo "Release"
+            }
+        }
+        stage('Monitoring and Alerting') { 
+            steps {
+                echo "Monitoring and Alerting"
             }
         }
     }

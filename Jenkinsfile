@@ -8,12 +8,8 @@ pipeline {
 
                 withMaven(
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
-                    maven: 'maven-399', // (1)
-                ) {
-                // Run the maven build
-                bat 'mvn clean install'
-                } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe & FindBugs & SpotBugs reports...
-
+                    bat 'mvn clean verify'
+                ) 
                 bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"

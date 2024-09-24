@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
+                bat "java --version"
                 echo "Building PrimeFinder"
                 bat "javac PrimeFinder.java"
                 
@@ -36,6 +37,7 @@ pipeline {
             }
             steps {
                 echo 'Running SonarQube Scanner'
+                bat "cd sonarqube"
                 // Use the scannerHome environment variable for the path
                 bat "\"${env.scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=mytoken"
             }

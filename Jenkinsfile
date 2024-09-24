@@ -40,7 +40,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing Code Analysis with SonarQube'
-                withSonarQubeEnv('lil-sonar-tool') {
+                withSonarQubeEnv('sq1') {
                     bat 'mvn sonar:sonar'
                 }
             }

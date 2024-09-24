@@ -1,14 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        WORKSPACE_DIR = '/c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from the Git repository
                 checkout scm
             }
         }
@@ -16,7 +11,6 @@ pipeline {
         stage('Verify Tooling') {
             steps {
                 script {
-                    // Verify Docker and other tooling versions
                     bat 'docker info'
                     bat 'docker --version'
                     bat 'docker-compose --version'
@@ -50,7 +44,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing code analysis'
-                // Placeholder for static analysis tools (e.g., SonarQube or Checkstyle)
+                // Add code analysis steps here, e.g., static analysis tools
             }
         }
 
@@ -58,49 +52,32 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image'
-                    
-                    // Build Docker image using a Linux-style path
                     bat 'docker build -t primefinder-image -f Dockerfile .'
-                    
-                    // Inspect the Docker image to ensure it's built
+
+                    echo 'Inspecting the Docker image'
                     bat 'docker inspect primefinder-image'
-                }
-            }
-        }
 
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    echo 'Running Docker container'
-
-                    // Adjusting the path for Docker volume mounting (Windows to Linux path)
-                    def dockerRunCmd = """
-                    docker run -d -v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD@2:/workspace \
-                    -w /workspace primefinder-image
-                    """
-                    
-                    bat dockerRunCmd
+                    echo 'Running Docker container and executing PrimeFinder up to 1,000,000'
+                    bat '''
+                    docker run -d -v /c/Users/lachl/AppData/Local/Jenkins/.jenkins/workspace/Task6.2HD:/workspace \
+                    -w /workspace primefinder-image \
+                    java -cp . PrimeFinder 1000000
+                    '''
                 }
             }
         }
 
         stage('Release') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
             steps {
                 echo 'Releasing the application...'
-                // Add any release steps needed here (e.g., deployment to a server or artifact repository)
+                // Add your release steps here
             }
         }
 
         stage('Monitoring and Alerting') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
             steps {
                 echo 'Setting up monitoring and alerting...'
-                // Add steps for setting up monitoring and alerting (e.g., Prometheus, Grafana)
+                // Add monitoring and alerting setup steps here
             }
         }
     }
